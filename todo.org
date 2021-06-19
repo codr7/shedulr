@@ -1,0 +1,7 @@
+* rentals
+** capacity double entry
+* time tracking
+** time double-entry
+* conferences
+** tracks/subjects
+* courses
