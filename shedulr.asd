@@ -10,4 +10,6 @@
   :entry-point "shedulr:repl"
   :depends-on ("local-time" "pardom" "uuid" "whirlog" "woo")
   :serial t
-  :components ((:file "id") (:file "shedulr")))
+  :components ((:file "id")
+	       (:file "ls")
+	       (:file "shedulr")))

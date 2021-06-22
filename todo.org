@@ -1,8 +1,10 @@
 * finish projects table
 ** add parents
-*** add list-column (list string)
-**** handle list column type
-**** create internal virtual item-column
+*** only init-column if null
+*** add encode/decode to/from list
+* add time/time-column
+** local-time
+** time.lisp
 * time tracking
 ** add user.projects / project.users
 ** time double-entry
