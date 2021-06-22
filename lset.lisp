@@ -1,34 +1,34 @@
-(defpackage ls
+(defpackage lset
   (:use cl)
   (:import-from sort compare)
   (:import-from whirlog
 		column compare-column decode-column encode-column init-column init-record name set-column-values)
-  (:export clear new ls-column tests add size))
+  (:export add clear new lset lset-column size tests))
 
-(in-package ls)
+(in-package lset)
 
-(defstruct ls
+(defstruct lset
   (compare #'sort:compare :type function)
   (items nil :type list)
   (size 0 :type integer))
 
-(defun new-ls (&rest args)
-  (let ((s (apply #'make-ls args)))
-    (setf (ls-size s) (length (ls-items s)))
+(defun new (&rest args)
+  (let ((s (apply #'make-lset args)))
+    (setf (lset-size s) (length (lset-items s)))
     s))
 
 (defun size (set)
-  (ls-size set))
+  (lset-size set))
 
 (defun clear (set)
-  (setf (ls-items set) nil (ls-size set) 0))
+  (setf (lset-items set) nil (lset-size set) 0))
 
 (defun add (set val)
   (let (ok?)
     (labels ((rec (in)
 	       (if in
 		   (let ((rhs (first in)))
-		     (ecase (funcall (ls-compare set) val rhs)
+		     (ecase (funcall (lset-compare set) val rhs)
 		       (:lt
 			(setf ok? t)
 			(cons val in))
@@ -41,20 +41,20 @@
 		   (progn
 		     (setf ok? t)			
 		     (list val)))))
-      (setf (ls-items set) (rec (ls-items set))))
+      (setf (lset-items set) (rec (lset-items set))))
     
     (when ok?
-      (incf (ls-size set))
+      (incf (lset-size set))
       t)))
 
-(defclass ls-column (column)
+(defclass lset-column (column)
   ((item-column :initarg :item-column :reader item-column)))
 
-(defmethod init-column ((col ls-column) rec)
-  (ls-column-values rec (name col) (new-ls :compare (lambda (x y)
-							 (compare-column (item-column col) x y)))))
+(defmethod init-column ((col lset-column) rec)
+  (set-column-values rec (name col) (new :compare (lambda (x y)
+						    (compare-column (item-column col) x y)))))
 
-(defmethod compare-column ((col ls-column) xs ys)
+(defmethod compare-column ((col lset-column) xs ys)
   (labels ((rec (xs ys)
 	     (let ((x (first xs)) (y (first ys)))
 	       (cond
@@ -65,11 +65,11 @@
 		      (:lt :lt)
 		      (:gt :gt)
 		      (:eq (rec (rest xs) (rest ys)))))))))
-    (rec (ls-items xs) (ls-items ys))))
+    (rec (lset-items xs) (lset-items ys))))
 
 (defun tests ()
-  (let ((s (new-ls)))
-    (assert (= (ls-size s) 0))
+  (let ((s (new)))
+    (assert (= (lset-size s) 0))
     (assert (add s 1))
     (assert (add s 3))
     (assert (add s 5))
@@ -77,12 +77,12 @@
     (assert (not (add s 3)))
     (assert (not (add s 5)))
     (assert (add s 4))
-    (assert (equal (ls-items s) '(1 3 4 5)))
-    (assert (= (ls-size s) 4)))
+    (assert (equal (lset-items s) '(1 3 4 5)))
+    (assert (= (lset-size s) 4)))
   
-  (let ((s (new-ls :items '(1 3 5))))
-    (assert (= (ls-size s) 3))
+  (let ((s (new :items '(1 3 5))))
+    (assert (= (lset-size s) 3))
     (assert (add s 4))
-    (assert (equal (ls-items s) '(1 3 4 5)))
-    (assert (= (ls-size s) 4))))
+    (assert (equal (lset-items s) '(1 3 4 5)))
+    (assert (= (lset-size s) 4))))
 

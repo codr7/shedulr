@@ -1,7 +1,7 @@
 (defpackage shedulr
   (:use cl)
   (:import-from id id-column)
-  (:import-from ls ls-column)
+  (:import-from lset lset-column)
   (:import-from whirlog
 		column column-value compare-column decode-column do-context encode-column init-column init-record
 		let-tables name new-record set-column-values string-column store-record with-db)
@@ -16,7 +16,7 @@
   (let-tables ((projects
 		(project-id :type id :key? t)
 		(project-name :type string)
-		(project-parents :type (ls id)))
+		(project-parents :type (lset id)))
 	       (users
 		(user-email :type string :key? t)
 		(user-password :type string)))
@@ -25,7 +25,7 @@
 	(let ((all-projects (init-record projects (new-record 'project-name "All Projects"))))
 	  (store-record projects all-projects)
 	  (let ((internal-projects (init-record projects (new-record 'project-name "Internal Projects"))))
-	    (ls:add (column-value internal-projects 'project-parents) (column-value all-projects 'project-id))
+	    (lset:add (column-value internal-projects 'project-parents) (column-value all-projects 'project-id))
 	    (store-record projects internal-projects))))
 	
       (let ((done? (gensym)))

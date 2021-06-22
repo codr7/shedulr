@@ -11,5 +11,5 @@
   :depends-on ("local-time" "pardom" "uuid" "whirlog" "woo")
   :serial t
   :components ((:file "id")
-	       (:file "ls")
+	       (:file "lset")
 	       (:file "shedulr")))
