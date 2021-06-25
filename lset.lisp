@@ -50,9 +50,23 @@
 (defclass lset-column (column)
   ((item-column :initarg :item-column :reader item-column)))
 
+(defun new-column-set (col &rest vals)
+  (new :compare (lambda (x y)
+		  (compare-column (item-column col) x y))
+       :items vals))
+
 (defmethod init-column ((col lset-column) rec)
-  (set-column-values rec (name col) (new :compare (lambda (x y)
-						    (compare-column (item-column col) x y)))))
+  (set-column-values rec (name col) (new-column-set col)))
+
+(defmethod encode-column ((col lset-column) set)
+  (mapcar (lambda (v)
+	    (encode-column (item-column col) v))
+	  (lset-items set)))
+
+(defmethod decode-column ((col lset-column) vals)
+  (apply #'new-column-set col (mapcar (lambda (v)
+					(decode-column (item-column col) v))
+				      vals)))
 
 (defmethod compare-column ((col lset-column) xs ys)
   (labels ((rec (xs ys)

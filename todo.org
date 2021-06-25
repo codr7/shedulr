@@ -1,7 +1,5 @@
-* finish projects table
-** add parents
-*** only init-column if null
-*** add encode/decode to/from list
+* hash user password
+* only init-column if null in rec
 * add time/time-column
 ** local-time
 ** time.lisp

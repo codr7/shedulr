@@ -3,20 +3,20 @@
   (:import-from uuid byte-array-to-uuid make-v4-uuid uuid-to-byte-array)
   (:import-from whirlog
 		column compare-column decode-column encode-column init-column init-record name set-column-values)
-  (:export id-column new-id))
+  (:export id-column new))
 
 (in-package id)
 
 (defparameter *length* 16)
   
-(defun new-id ()
+(defun new ()
   (make-v4-uuid))
 
 (defclass id-column (column)
   ())
 
 (defmethod init-column ((col id-column) rec)
-  (set-column-values rec (name col) (new-id)))
+  (set-column-values rec (name col) (new)))
 
 (defmethod encode-column ((col id-column) val)
   (uuid-to-byte-array val))
