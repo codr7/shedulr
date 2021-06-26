@@ -13,17 +13,16 @@
   (cl-bcrypt:make-password in :salt salt))
 
 (defun new (in)
-  (let ((s (new-salt)))
-    (cons s (hash in s))))
+  (hash in (new-salt)))
 
 (defun check (x y)
-  (string= (cl-bcrypt:encode (hash y (cl-bcrypt:salt x))) (cl-bcrypt:encode (rest x))))
+  (string= (cl-bcrypt:encode (hash y (cl-bcrypt:salt x))) (cl-bcrypt:encode x)))
 
 (defclass password-column (string-column)
   ())
 
 (defmethod encode-column ((col password-column) val)
-  (cl-bcrypt:encode (rest val)))
+  (cl-bcrypt:encode val))
 
 (defmethod decode-column ((col password-column) val)
-  (cl-bcrypt:decode (rest val)))
+  (cl-bcrypt:decode val))

@@ -38,10 +38,10 @@
 	      (store-record projects external-projects))))
 
 	(flet ((login (id password)
-		 (let ((found? (find-record users #(id))))
-		   (unless found?
+		 (let ((found (find-record users `#(,id))))
+		   (unless found
 		     (error "Unknown user id: ~a" id))
-		   (unless (password:check (column-value found? 'user-password) password)
+		   (unless (password:check (column-value found 'user-password) password)
 		     (error "Wrong password")))))
 	  (login "shedulr" "shedulr")))
       
