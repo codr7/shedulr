@@ -1,4 +1,3 @@
-* debug password check
 * only init-column if null in rec
 * add time/time-column
 ** local-time

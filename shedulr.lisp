@@ -13,29 +13,32 @@
 (defparameter *version* 1)
 
 (defun repl ()
-  (let-tables ((projects
-		(project-id :type id :key? t)
-		(project-name :type string)
-		(project-parents :type (lset id)))
+  (let-tables ((accounts
+		(account-id :type id :key? t)
+		(account-name :type string)
+		(account-parents :type (lset id)))
 	       (users
 		(user-id :type string :key? t)
 		(user-password :type password)))
-    (with-db ("/tmp/shedulr/" (projects users))
+    (with-db ("/tmp/shedulr/" (accounts users))
       (do-context ()
 	(when (zerop (record-count users))
-	  (store-record users (new-record 'user-id "shedulr" 'user-password (password:new "shedulr")))
+	  (store-record users
+			(init-record users
+				     (new-record 'user-id "shedulr"
+						 'user-password (password:new "shedulr"))))
 	  
-	  (let* ((all-projects (init-record projects (new-record 'project-name "All Projects")))
-		 (all-id (column-value all-projects 'project-id)))
-	    (store-record projects all-projects)
+	  (let* ((all-accounts (init-record accounts (new-record 'account-name "All")))
+		 (all-id (column-value all-accounts 'account-id)))
+	    (store-record accounts all-accounts)
 	    
-	    (let ((internal-projects (init-record projects (new-record 'project-name "Internal Projects"))))
-	      (lset:add (column-value internal-projects 'project-parents) all-id)
-	      (store-record projects internal-projects))
+	    (let ((internal-accounts (init-record accounts (new-record 'account-name "Internal"))))
+	      (lset:add (column-value internal-accounts 'account-parents) all-id)
+	      (store-record accounts internal-accounts))
 	    
-	    (let ((external-projects (init-record projects (new-record 'project-name "External Projects"))))
-	      (lset:add (column-value external-projects 'project-parents) all-id)
-	      (store-record projects external-projects))))
+	    (let ((external-accounts (init-record accounts (new-record 'account-name "External"))))
+	      (lset:add (column-value external-accounts 'account-parents) all-id)
+	      (store-record accounts external-accounts))))
 
 	(flet ((login (id password)
 		 (let ((found (find-record users `#(,id))))
