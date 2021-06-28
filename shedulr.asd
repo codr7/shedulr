@@ -10,7 +10,8 @@
   :entry-point "shedulr:repl"
   :depends-on ("cl-bcrypt" "local-time" "pardom" "uuid" "whirlog" "woo")
   :serial t
-  :components ((:file "id")
-	       (:file "lset")
+  :components ((:file "lset")
 	       (:file "password")
+	       (:file "time")
+	       (:file "unique")
 	       (:file "shedulr")))

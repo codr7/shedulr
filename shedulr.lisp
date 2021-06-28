@@ -1,9 +1,9 @@
 (defpackage shedulr
   (:use cl)
-  (:import-from id id-column)
   (:import-from lset lset-column)
   (:import-from password password-column)
   (:import-from time time-column)
+  (:import-from unique unique-column)
   (:import-from whirlog
 		column column-value compare-column decode-column do-context encode-column find-record init-column
 		init-record let-tables name new-record number-column record-count set-column-values string-column
@@ -60,18 +60,18 @@
 				      'timesheet-minutes minutes)))
 (defun repl ()
   (let-tables ((accounts
-		(account-id :type id :key? t)
+		(account-id :type unique :key? t)
 		(account-name :type string)
 		(account-description :type string)
-		(account-parents :type (lset id)))
+		(account-parents :type (lset unique)))
 	       (users
 		(user-id :type string :key? t)
 		(user-password :type password))
 	       (timesheets
 		(timesheet-id :type number :key? t)
 		(timesheet-user-id :type string)
-		(timesheet-debit-account-id :type id)
-		(timesheet-credit-account-id :type id)
+		(timesheet-debit-account-id :type unique)
+		(timesheet-credit-account-id :type unique)
 		(timesheet-day :type time)
 		(timesheet-minutes :type number)))
     (with-db ("/tmp/shedulr/" (accounts users timesheets))
