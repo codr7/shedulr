@@ -78,6 +78,8 @@
       (do-context ()
 	(when (zerop (record-count users))
 	  (init-db))
+
+	(login "shedulr" "shedulr")
 	
 	(let ((x (new-account "x"))
 	      (y (new-account "y")))
@@ -87,9 +89,7 @@
 						  :debit-account x
 						  :credit-account y
 						  :day (time:today)
-						  :minutes (* 8 60))))
-	
-	(login "shedulr" "shedulr"))
+						  :minutes (* 8 60)))))
 
       (let ((done? (gensym)))
 	(labels ((read-form ()
