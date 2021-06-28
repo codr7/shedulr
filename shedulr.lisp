@@ -40,7 +40,7 @@
 	 (user (init-record users (new-record 'user-id id
 					      'user-password (password:new password)
 					      'user-resource (column-value res 'resource-id)))))
-    
+    (store-record resources res)
     user))
 
 (defun login (id password)
@@ -73,11 +73,10 @@
       (lset:add (column-value sink 'account-parents) time-id)
       (store-record accounts sink))))
 
-(defun new-timesheet (&key user debit-account credit-account day minutes)
+(defun new-timesheet (&key user account day minutes)
   (init-record timesheets (new-record 'timesheet-id (record-count timesheets)
 				      'timesheet-user-id (column-value user 'user-id)
-				      'timesheet-debit-account-id (column-value debit-account 'account-id)
-				      'timesheet-credit-account-id (column-value credit-account 'account-id)
+				      'timesheet-account-id (column-value account 'account-id)
 				      'timesheet-created-at (time:now)
 				      'timesheet-day day
 				      'timesheet-minutes minutes)))
@@ -105,8 +104,7 @@
 	       (timesheets
 		(timesheet-id :type number :key? t)
 		(timesheet-user-id :type string)
-		(timesheet-debit-account-id :type unique)
-		(timesheet-credit-account-id :type unique)
+		(timesheet-account-id :type unique)
 		(timesheet-created-at :type time)
 		(timesheet-day :type time)
 		(timesheet-minutes :type number)))
@@ -117,13 +115,10 @@
 
 	(login "shedulr" "shedulr")
 	
-	(let ((x (new-account "x"))
-	      (y (new-account "y")))
-	  (store-record accounts x)
-	  (store-record accounts y)
+	(let ((acc (new-account "acc")))
+	  (store-record accounts acc)
 	  (store-record timesheets (new-timesheet :user (find-record users #("shedulr"))
-						  :debit-account x
-						  :credit-account y
+						  :account acc
 						  :day (time:today)
 						  :minutes (* 8 60)))))
 

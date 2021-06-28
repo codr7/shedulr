@@ -31,6 +31,6 @@
   (ecase (sort:compare (first x) (first y))
     (:lt :lt)
     (:gt :gt)
-    (sort:compare (rest x) (rest y))))
+    (:eq (sort:compare (rest x) (rest y)))))
 
 

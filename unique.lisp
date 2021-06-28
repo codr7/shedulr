@@ -22,7 +22,7 @@
   (uuid-to-byte-array val))
 
 (defmethod decode-column ((col unique-column) val)
-  (byte-array-to-uuid val))
+  (byte-array-to-uuid (make-array 16 :element-type '(unsigned-byte 8) :initial-contents val)))
 
 (defmethod compare-column ((col unique-column) xs ys)
   (dotimes (i *length*)
