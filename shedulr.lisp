@@ -15,11 +15,33 @@
 (defparameter *version* 1)
 
 (defvar accounts)
-(defvar users)
+(defvar calendars)
+(defvar resources)
 (defvar timesheets)
+(defvar users)
+
+(defparameter *min-time* (time:new 1 1 1 0 0))
+(defparameter *max-time* (time:new 9999 12 31 23 59))
+  
+(defun new-calendar (resource slot-start slot-end total)
+  (init-record calendars (new-record 'calendar-resource-id (column-value resource 'resource-id)
+				     'calendar-slot-start slot-start
+				     'calendar-slot-end slot-end
+				     'calendar-total total
+				     'calendar-free total)))
+
+(defun new-resource (name total)
+  (let ((res (init-record resources (new-record 'resource-name name))))
+    (store-record calendars (new-calendar res *min-time* *max-time* total))
+    res))
 
 (defun new-user (id password)
-  (init-record users (new-record 'user-id id 'user-password (password:new password))))
+  (let* ((res (new-resource id 1))
+	 (user (init-record users (new-record 'user-id id
+					      'user-password (password:new password)
+					      'user-resource (column-value res 'resource-id)))))
+    
+    user))
 
 (defun login (id password)
   (let ((found (find-record users `#(,id))))
@@ -56,6 +78,7 @@
 				      'timesheet-user-id (column-value user 'user-id)
 				      'timesheet-debit-account-id (column-value debit-account 'account-id)
 				      'timesheet-credit-account-id (column-value credit-account 'account-id)
+				      'timesheet-created-at (time:now)
 				      'timesheet-day day
 				      'timesheet-minutes minutes)))
 (defun repl ()
@@ -64,17 +87,30 @@
 		(account-name :type string)
 		(account-description :type string)
 		(account-parents :type (lset unique)))
+	       (resources
+		(resource-id :type unique :key? t)
+		(resource-name :type string)
+		(resource-description :type string)
+		(resource-parents :type (lset unique)))
+	       (calendars
+		(calendar-resource-id :type unique :key? t)
+		(calendar-slot-start :type time :key? t)
+		(calendar-slot-end :type time)
+		(calendar-total :type number)
+		(calendar-free :type number))
 	       (users
 		(user-id :type string :key? t)
-		(user-password :type password))
+		(user-password :type password)
+		(user-resource :type unique))
 	       (timesheets
 		(timesheet-id :type number :key? t)
 		(timesheet-user-id :type string)
 		(timesheet-debit-account-id :type unique)
 		(timesheet-credit-account-id :type unique)
+		(timesheet-created-at :type time)
 		(timesheet-day :type time)
 		(timesheet-minutes :type number)))
-    (with-db ("/tmp/shedulr/" (accounts users timesheets))
+    (with-db ("/tmp/shedulr/" (accounts resources calendars users timesheets))
       (do-context ()
 	(when (zerop (record-count users))
 	  (init-db))

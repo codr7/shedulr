@@ -1,4 +1,7 @@
 * only init-column if null in rec
+* add references
+** generate key columns
+** add fun to set keys from rec
 * rentals
 * conferences
 * courses
