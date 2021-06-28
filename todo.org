@@ -1,12 +1,4 @@
 * only init-column if null in rec
-* add time/time-column
-** local-time
-** time.lisp
-* time tracking
-** add user.projects / project.users
-** time double-entry
 * rentals
-** capacity double entry
 * conferences
-** tracks/subjects
 * courses
