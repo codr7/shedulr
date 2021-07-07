@@ -1,6 +1,6 @@
 (defpackage unique
   (:use cl)
-  (:import-from uuid byte-array-to-uuid make-v4-uuid uuid-to-byte-array)
+  (:import-from uuid byte-array-to-uuid make-v4-uuid uuid-to-byte-array uuid)
   (:import-from whirlog
 		column compare-column decode-column encode-column init-column init-record name set-column-values)
   (:export unique-column new-id))
@@ -18,7 +18,7 @@
 (defmethod init-column ((col unique-column) rec)
   (set-column-values rec (name col) (new-id)))
 
-(defmethod encode-column ((col unique-column) val)
+(defmethod encode-column ((col unique-column) (val uuid))
   (uuid-to-byte-array val))
 
 (defmethod decode-column ((col unique-column) val)

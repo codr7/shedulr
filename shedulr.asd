@@ -8,10 +8,9 @@
   :build-operation "asdf:program-op"
   :build-pathname "shedulr"
   :entry-point "shedulr:repl"
-  :depends-on ("cl-bcrypt" "local-time" "pardom" "uuid" "whirlog" "woo")
+  :depends-on ("cl-bcrypt" "local-time" "uuid" "whirlog")
   :serial t
-  :components ((:file "lset")
-	       (:file "password")
+  :components ((:file "hash")
 	       (:file "time")
 	       (:file "unique")
 	       (:file "shedulr")))

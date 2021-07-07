@@ -1,7 +1,7 @@
 (defpackage time
   (:use cl)
   (:import-from local-time
-		decode-timestamp encode-timestamp nsec-of timestamp< timestamp> timestamp-to-universal
+		decode-timestamp encode-timestamp nsec-of timestamp timestamp< timestamp> timestamp-to-universal
 		universal-to-timestamp)
   (:import-from whirlog
 		column compare-column decode-column encode-column init-column init-record name set-column-values)
@@ -21,7 +21,7 @@
 (defclass time-column (column)
   ())
 
-(defmethod encode-column ((col time-column) val)
+(defmethod encode-column ((col time-column) (val timestamp))
   (cons (timestamp-to-universal val) (nsec-of val)))
 
 (defmethod decode-column ((col time-column) val)

@@ -1,3 +1,14 @@
+* record columns
+** debug error on empty db
+** commit
+* move lset to whirlog
+* add projects
+** project-time-account, project-parents
+** switch timesheets from accounts to project 
+* add ledgers
+** account, time, value
+** update when storing timesheets
+* add resource-account
 * only init-column if null in rec
 * add references
 ** generate key columns

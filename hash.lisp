@@ -1,6 +1,5 @@
 (defpackage hash
   (:use cl)
-  (:import-from cl-bcrypt password)
   (:import-from whirlog
 	        decode-column encode-column string-column)
   (:export check hash hash-column new new-salt))
@@ -22,7 +21,7 @@
 (defclass hash-column (string-column)
   ())
 
-(defmethod encode-column ((col hash-column) (password val))
+(defmethod encode-column ((col hash-column) (val cl-bcrypt:password))
   (cl-bcrypt:encode val))
 
 (defmethod decode-column ((col hash-column) val)
