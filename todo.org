@@ -1,11 +1,10 @@
 * add projects
-** project-time-account, project-parents
+** project-time-account, project-tags
 ** switch timesheets from accounts to project 
 * add ledgers
 ** account, time, value
 ** update when storing timesheets
 * add resource-account
-* only init-column if null in rec
 * add references
 ** generate key columns
 ** add fun to set keys from rec

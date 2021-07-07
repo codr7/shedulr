@@ -13,6 +13,8 @@
 (in-package shedulr)
 
 (defparameter *version* 1)
+(defparameter *min-time* (time:new 1 1 1 0 0))
+(defparameter *max-time* (time:new 9999 12 31 23 59))
 
 (defvar accounts)
 (defvar calendars)
@@ -20,9 +22,8 @@
 (defvar timesheets)
 (defvar users)
 
-(defparameter *min-time* (time:new 1 1 1 0 0))
-(defparameter *max-time* (time:new 9999 12 31 23 59))
-  
+(defvar internal-time)
+
 (defun new-calendar (resource slot-start slot-end total)
   (init-record calendars (new-record 'calendar-resource resource
 				     'calendar-slot-start slot-start
@@ -61,13 +62,13 @@
 	 (time-key (record-key accounts time)))
     (store-record accounts time)
     
-    (let ((internal-accounts (new-account "Internal")))
-      (lset:add (column-value internal-accounts 'account-parents) time-key)
-      (store-record accounts internal-accounts))
-    
-    (let ((external-accounts (new-account "External")))
-      (lset:add (column-value external-accounts 'account-parents) time-key)
-      (store-record accounts external-accounts))))
+    (setf internal-time (new-account "Internal"))
+    (lset:add (column-value internal-time 'account-tags) time-key)
+    (store-record accounts internal-time)
+  
+    (let ((external-time (new-account "External")))
+      (lset:add (column-value external-time 'account-tags) time-key)
+      (store-record accounts external-time))))
 
 (defun new-timesheet (&key user account day minutes)
   (init-record timesheets (new-record 'timesheet-id (record-count timesheets)
@@ -81,12 +82,12 @@
 		(account-id :type unique :key? t)
 		account-name
 		account-description
-		(account-parents :type (lset record :table accounts)))
+		(account-tags :type (lset record :table t)))
 	       (resources
 		(resource-id :type unique :key? t)
 		resource-name
 		resource-description
-		(resource-parents :type (lset record :table resources)))
+		(resource-tags :type (lset record :table t)))
 	       (calendars
 		(calendar-resource :type record :table resources :key? t)
 		(calendar-slot-start :type time :key? t)
@@ -111,7 +112,8 @@
 
 	(login "shedulr" "shedulr")
 	
-	(let ((acc (new-account "acc")))
+	(let ((acc (new-account "Project A")))
+	  (lset:add (column-value acc 'account-tags) internal-time)
 	  (store-record accounts acc)
 	  (store-record timesheets (new-timesheet :user (find-record users #("shedulr"))
 						  :account acc
