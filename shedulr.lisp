@@ -79,31 +79,31 @@
 (defun repl ()
   (let-tables ((accounts
 		(account-id :type unique :key? t)
-		(account-name :type string)
-		(account-description :type string)
+		account-name
+		account-description
 		(account-parents :type (lset record :table accounts)))
 	       (resources
 		(resource-id :type unique :key? t)
-		(resource-name :type string)
-		(resource-description :type string)
+		resource-name
+		resource-description
 		(resource-parents :type (lset record :table resources)))
 	       (calendars
 		(calendar-resource :type record :table resources :key? t)
 		(calendar-slot-start :type time :key? t)
 		(calendar-slot-end :type time)
-		(calendar-total :type number)
-		(calendar-free :type number))
+		calendar-total
+		calendar-free)
 	       (users
-		(user-id :type string :key? t)
+		(user-id :key? t)
 		(user-password :type hash)
 		(user-resource :type record :table resources))
 	       (timesheets
-		(timesheet-id :type number :key? t)
+		(timesheet-id :key? t)
 		(timesheet-user :type record :table users)
 		(timesheet-account :type record :table accounts)
 		(timesheet-created-at :type time)
 		(timesheet-day :type time)
-		(timesheet-minutes :type number)))
+		(timesheet-minutes)))
     (with-db ("/tmp/shedulr/" (accounts resources calendars users timesheets))
       (do-context ()
 	(when (zerop (record-count users))
