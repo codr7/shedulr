@@ -81,12 +81,12 @@
   (let-tables ((accounts
 		(account-id :type unique :key? t)
 		account-name
-		account-description
+		(account-description :nil? t)
 		(account-tags :type (lset record :table t)))
 	       (resources
 		(resource-id :type unique :key? t)
 		resource-name
-		resource-description
+		(resource-description :nil? t)
 		(resource-tags :type (lset record :table t)))
 	       (calendars
 		(calendar-resource :type record :table resources :key? t)
