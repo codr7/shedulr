@@ -1,3 +1,5 @@
+* add socket server 
+** use sbcl serve-event
 * add projects
 ** project-time-account, project-tags
 ** switch timesheets from accounts to project 
